@@ -185,7 +185,10 @@ RUN \
     sed "s:\(^#log_directory.*\):\1\nlog_directory = '${PG_LOG}':g" \
         -i ${PGDATA}/postgresql.conf &&\
     sed "s:\(^#stats_temp_directory.*\):\1\nstats_temp_directory = '${PG_STATS_TEMP}':g" \
-        -i ${PGDATA}/postgresql.conf
+        -i ${PGDATA}/postgresql.conf &&\
+    su - postgres -c "echo '\x auto' > ~/.psqlrc" &&\
+    su - postgres -c "echo '\set COMP_KEYWORD_CASE upper' >> ~/.psqlrc" &&\
+    su - postgres -c "echo '\set HISTCONTROL ignoreboth' >> ~/.psqlrc"
     
 
 USER ${PGUSER}
