@@ -8,7 +8,7 @@ COPY docker-entrypoint.sh /usr/local/bin/
 
 # Python
 
-ENV PYTHON_VERSION 3.8
+ARG PYTHON_VERSION=3.8
 ENV PYTHON /usr/local/bin/python${PYTHON_VERSION}
 
 # Packages
@@ -19,8 +19,8 @@ ENV PKG \
 
 # PostgreSQL
 
-ENV PG_MAJOR 12
-ENV PG_VERSION 12beta2
+ARG PG_MAJOR=12
+ARG PG_VERSION=12beta2
 ENV PG_SHA256 1738da8e1e59d4f2dc69c216e67100c6d4dad46714cf597cc2db66077204d31f
 ENV PG_SRC postgresql-${PG_VERSION}
 ENV PG_SRC_F ${PG_SRC}.tar.bz2
@@ -71,7 +71,7 @@ RUN \
 
 # ############################################################################
 
-FROM python:3.8-rc-slim-buster AS final
+FROM python:${PYTHON_VERSION}-rc-slim-buster AS final
 
 COPY --from=builder /tmp/pg.tar /tmp/
 
