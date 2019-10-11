@@ -4,7 +4,7 @@
 
 ARG PYTHON_VERSION='3.7'
 
-FROM python:${PYTHON_VERSION} AS builder
+FROM python:${PYTHON_VERSION}-slim AS builder
 
 ARG PG_VERSION='12.0'
 
