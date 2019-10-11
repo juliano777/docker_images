@@ -163,6 +163,10 @@ RUN sed "s:\(^#password_encryption.*\):\1\npassword_encryption = scram-sha-256:g
 RUN tar cf /tmp/pg.tar ${PG_HOME} ${PGUSERHOME} /etc \
     /usr/local/bin/docker-entrypoint.sh
 
+
+
+
+
 # ############################################################################
 
 FROM python:${PYTHON_VERSION}-slim AS final
