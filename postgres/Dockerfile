@@ -214,12 +214,12 @@ RUN tar xvf /tmp/pg.tar --overwrite -C / && \
         /srv \
         /tmp/* \
         /var/lib/apt/lists/* && \
-        echo "localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias \
-            pt_BR.UTF-8" &&\
-        echo "localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias \
-            en_US.UTF-8" &&\
-        echo "localedef -i en_DK -c -f UTF-8 -A /usr/share/locale/locale.alias \
-            en_DK.UTF-8"
+        localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias \
+            pt_BR.UTF-8 &&\
+        localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias \
+            en_US.UTF-8 &&\
+        localedef -i en_DK -c -f UTF-8 -A /usr/share/locale/locale.alias \
+            en_DK.UTF-8
      
         
 USER ${PGUSER}
