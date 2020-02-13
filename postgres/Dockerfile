@@ -2,52 +2,46 @@
 
 # ############################################################################
 
-ARG PYTHON_VERSION='3.7'
+ARG PYTHON_VERSION='3.8'
 
-FROM python:${PYTHON_VERSION}-slim AS builder
+FROM juliano777/python:${PYTHON_VERSION} AS builder
 
-ARG PG_VERSION='12.0'
+ARG PG_VERSION='12.2'
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
 # ====== Variáveis de Ambiente ===============================================
 
-ENV PKG \
+ARG PKG="\
     build-essential bison flex gettext make bzip2 libreadline-dev libssl-dev \
-    libxml2-dev libldap2-dev libossp-uuid-dev lbzip2 zlib1g-dev wget locales
+    libxml2-dev libldap2-dev libossp-uuid-dev lbzip2 zlib1g-dev wget locales"
 
-ENV PG_SRC postgresql-${PG_VERSION}
-ENV PG_SRC_F ${PG_SRC}.tar.bz2
-ENV PG_URL https://ftp.postgresql.org/pub/source/v${PG_VERSION}/${PG_SRC_F}
+
 
 # PostgreSQL
 
-ENV PG_HOME /usr/local/pgsql
-ENV PG_BIN ${PG_HOME}/bin
-ENV PG_DOC ${PG_HOME}/doc
-ENV PG_LIB ${PG_HOME}/lib
-ENV PG_MAN ${PG_HOME}/man
-
-ENV PGUSERHOME /var/local/pgsql
-ENV PGDATA ${PGUSERHOME}/data
-ENV PG_STATS_TEMP ${PGUSERHOME}/pg_stat_tmp
-ENV PG_WAL ${PGUSERHOME}/wal
-ENV PG_LOG ${PGUSERHOME}/log
-
-ENV PGPORT 5432
-ENV PGUSER postgres
-ENV PGDATABASE postgres
-ENV PGGROUP postgres
+ARG PG_HOME='/usr/local/pgsql'
+ARG PG_BIN="${PG_HOME}/bin"
+ARG PG_DOC="${PG_HOME}/doc"
+ARG PG_LIB="${PG_HOME}/lib"
+ARG PG_MAN="${PG_HOME}/man"
+ARG PGUSERHOME='/var/local/pgsql'
+ARG PGDATA="${PGUSERHOME}/data"
+ARG PG_STATS_TEMP="${PGUSERHOME}/pg_stat_tmp"
+ARG PG_WAL="${PGUSERHOME}/wal"
+ARG PG_LOG="${PGUSERHOME}/log"
+ARG PGPORT='5432'
+ARG PGUSER='postgres'
+ARG PGDATABASE='postgres'
+ARG PGGROUP='postgres'
 
 # Python
-
-ENV PYTHON /usr/local/bin/python3
 
 ENV LD_LIBRARY_PATH ${PG_LIB}:${LD_LIBRARY_PATH}
 ENV PATH ${PG_BIN}:${PATH}
 ENV MANPATH ${PG_MAN}:${MANPATH}
 
-ENV CONFIGURE_OPTS \
+ARG CONFIGURE_OPTS="\
     --prefix ${PG_HOME} \
     --bindir ${PG_BIN} \
     --with-python \
@@ -57,10 +51,10 @@ ENV CONFIGURE_OPTS \
     --with-uuid=ossp \
     --includedir=/usr/local/include \
     --mandir=${PG_MAN} \
-    --docdir=${PG_DOC}
+    --docdir=${PG_DOC}"
 
 # Número de jobs conforme a quantidade cores de CPU (cores + 1): 
-ENV NJOBS `expr \`cat /proc/cpuinfo | egrep ^processor | wc -l\` + 1`
+ARG NJOBS="`expr \`cat /proc/cpuinfo | egrep ^processor | wc -l\` + 1`"
 
 # Opções do make
 ENV MAKEOPTS -j${NJOBS}
@@ -70,23 +64,26 @@ ENV CHOST x86_64-unknown-linux-gnu
 
 # Flags de otimização para o make 
 ENV CFLAGS -O2 -pipe
-ENV CXXFLAGS $CFLAGS
+ENV CXXFLAGS ${CFLAGS}
 
 # Locales
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LOCALE pt_BR.UTF-8
-ENV LC_CTYPE pt_BR.UTF-8
-ENV LC_NUMERIC en_US.UTF-8
-ENV LC_TIME en_DK.UTF-8  # Data no formato YYYY-mm-dd 
-ENV LC_COLLATE pt_BR.UTF-8
-ENV LC_MONETARY pt_BR.UTF-8
-ENV LC_MESSAGES en_US.UTF-8
+ARG LANG='en_US.UTF-8'
+ARG LANGUAGE='en_US:en'
+ARG LOCALE='pt_BR.UTF-8'
+ARG LC_CTYPE='pt_BR.UTF-8'
+ARG LC_NUMERIC='en_US.UTF-8'
+
+# Data no formato YYYY-mm-dd
+ARG LC_TIME='en_DK.UTF-8'
+
+ARG LC_COLLATE='pt_BR.UTF-8'
+ARG LC_MONETARY='pt_BR.UTF-8'
+ARG LC_MESSAGES='en_US.UTF-8'
 
 # initdb
 
-ENV INITDB_OPTS \
+ARG INITDB_OPTS="\
     -k \
     -D ${PGDATA} \
     -E utf8 \
@@ -98,16 +95,21 @@ ENV INITDB_OPTS \
     --auth-local=trust \
     --auth-host=scram-sha-256 \
     -T portuguese \
-    -X ${PG_WAL}
-
-# ============================================================================    
+    -X ${PG_WAL}"
 
 RUN apt update
 RUN apt install -y ${PKG}
 RUN wget -qc ${PG_URL} -P /tmp
 RUN tar -xf /tmp/${PG_SRC_F} -C /tmp/
+RUN cd /tmp/${PG_SRC}
 
 WORKDIR /tmp/${PG_SRC}
+
+
+
+
+
+
 
 # Configuração de idiomas (locales)
 RUN localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias \
@@ -135,7 +137,7 @@ RUN useradd -m -r \
 RUN mkdir -p ${PG_STATS_TEMP} ${PG_WAL} ${PGDATA} ${PG_LOG}
 RUN chown -R ${PGUSER}:${PGGROUP} ${PGUSERHOME} 
 
-RUN ./configure ${CONFIGURE_OPTS}
+RUN PYTHON='/usr/local/bin/python' ./configure ${CONFIGURE_OPTS}
 RUN make world
 RUN make install-world
 
@@ -164,33 +166,30 @@ RUN tar cf /tmp/pg.tar ${PG_HOME} ${PGUSERHOME} /etc \
     /usr/local/bin/docker-entrypoint.sh
 
 
-
-
-
 # ############################################################################
 
-FROM python:${PYTHON_VERSION}-slim AS final
+FROM juliano7777/python:${PYTHON_VERSION} AS final
 
 # ====== Variáveis de Ambiente ===============================================
 
-ENV PKG libldap-2.4-2 libxml2 locales
+ARG PKG='libldap-2.4-2 libxml2 locales'
 
 # PostgreSQL
 
-ENV PG_HOME /usr/local/pgsql
-ENV PG_BIN ${PG_HOME}/bin
-ENV PG_DOC ${PG_HOME}/doc
-ENV PG_LIB ${PG_HOME}/lib
-ENV PG_MAN ${PG_HOME}/man
+ARG PG_HOME='/usr/local/pgsql'
+ARG PG_BIN="${PG_HOME}/bin"
+ARG PG_DOC="${PG_HOME}/doc"
+ARG PG_LIB="${PG_HOME}/lib"
+ARG PG_MAN="${PG_HOME}/man"
 
-ENV PGUSERHOME /var/local/pgsql
-ENV PGDATA ${PGUSERHOME}/data
-ENV PG_STATS_TEMP ${PGUSERHOME}/pg_stat_tmp
-ENV PG_WAL ${PGUSERHOME}/pg_wal
+ARG PGUSERHOME='/var/local/pgsql'
+ARG PGDATA="${PGUSERHOME}/data"
+ARG PG_STATS_TEMP="${PGUSERHOME}/pg_stat_tmp"
+ARG PG_WAL="${PGUSERHOME}/pg_wal"
 
-ENV PGPORT 5432
-ENV PGUSER postgres
-ENV PGDATABASE postgres
+ARG PGPORT='5432'
+ARG PGUSER='postgres'
+ARG PGDATABASE='postgres'
 
 
 ENV LD_LIBRARY_PATH ${PG_LIB}:${LD_LIBRARY_PATH}
@@ -232,6 +231,6 @@ WORKDIR ${PGUSERHOME}
 
 EXPOSE ${PGPORT}
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ['docker-entrypoint.sh']
 
-CMD ["postgres"]
+CMD ['postgres']

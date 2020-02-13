@@ -7,7 +7,7 @@ ARG PKG='libbluetooth-dev tk-dev uuid-dev libssl-dev'
 RUN apt update &&\
 	apt install -y --no-install-recommends ${PKG}
 
-ARG PYTHON_VERSION='3.7.6'
+ARG PYTHON_VERSION='3.8.1'
 
 ARG PYTHON_URL="https://www.python.org/ftp/python/\
 ${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz"
@@ -113,7 +113,7 @@ RUN find /usr/local -depth \
 FROM debian:buster-slim AS final
 
 ARG PYTHONHOME='/usr/local/python'
-ARG PYTHON_VERSION='3.7'
+ARG PYTHON_VERSION='3.8'
 ARG APT_PKG='sqlite3 libexpat1 libssl1.1 rdfind'
 ARG NO_APT='rdfind'
 
