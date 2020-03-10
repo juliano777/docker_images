@@ -167,6 +167,7 @@ ARG PGDATA="${PGUSERHOME}/data"
 ARG PGPORT='5432'
 ARG PGUSER='postgres'
 ARG PGDATABASE='postgres'
+ARG PGPYTHONPATH="${PGUSERHOME}/python"
 
 ARG LOCALE='pt_BR.UTF-8'
 
@@ -181,7 +182,8 @@ ENV \
     PGDATABASE="${PGDATABASE}" \
     LD_LIBRARY_PATH="${PG_LIB}:${LD_LIBRARY_PATH}" \
     MANPATH="${PG_MAN}:${MANPATH}" \
-    PATH="${PG_BIN}:${PATH}"    
+    PATH="${PG_BIN}:${PATH}" \
+    PYTHONPATH="${PYTHONPATH}:${PGPYTHONPATH}"
 
 COPY --from=builder /tmp/pg.tar.gz /tmp/
 
