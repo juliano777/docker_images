@@ -20,6 +20,7 @@ ARG PGDATA="${PGUSERHOME}/data"
 ARG PG_STATS_TEMP="${PGUSERHOME}/pg_stat_tmp"
 ARG PG_WAL="${PGUSERHOME}/wal"
 ARG PG_LOG="${PGUSERHOME}/log"
+ARG PGPYTHONPATH="${PGUSERHOME}/python"
 ARG PGPORT='5432'
 ARG PGUSER='postgres'
 ARG PGDATABASE='postgres'
@@ -96,7 +97,11 @@ RUN \
         --skel /etc/skel\
         --comment 'PostgreSQL System User'\
         ${PGUSER} &&\
-    mkdir -p ${PG_STATS_TEMP} ${PG_WAL} ${PGDATA} ${PG_LOG} &&\
+    mkdir -p \
+        ${PG_STATS_TEMP}\
+        ${PG_WAL} ${PGDATA}\
+        ${PG_LOG}\
+        ${PGPYTHONPATH} &&\
     chown -R ${PGUSER}:${PGGROUP} ${PGUSERHOME} &&\
     cd /tmp/${PG_SRC} &&\
     PYTHON='/usr/local/bin/python' ./configure ${CONFIGURE_OPTS} &&\
@@ -165,8 +170,6 @@ ARG PGDATABASE='postgres'
 ARG LOCALE='pt_BR.UTF-8'
 
 ARG PKG='libldap-2.4-2 libxml2 locales rdfind'
-
-
 
 # Environment Variables
 
