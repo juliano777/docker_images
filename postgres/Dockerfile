@@ -99,7 +99,8 @@ RUN \
         ${PGUSER} &&\
     mkdir -p \
         ${PG_STATS_TEMP}\
-        ${PG_WAL} ${PGDATA}\
+        ${PG_WAL} \
+        ${PGDATA}\
         ${PG_LOG}\
         ${PGPYTHONPATH} &&\
     chown -R ${PGUSER}:${PGGROUP} ${PGUSERHOME} &&\
