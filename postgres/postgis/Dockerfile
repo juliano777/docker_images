@@ -28,7 +28,7 @@ FROM juliano777/postgres AS final
 
 COPY --from=builder /tmp/pg.tar /tmp
 
-RUN tar xvf /tmp/pg.tar -C /
+RUN tar xvf --overwrite /tmp/pg.tar -C /
 
 USER "${PGUSER}"
 WORKDIR "${PGUSERHOME}"
