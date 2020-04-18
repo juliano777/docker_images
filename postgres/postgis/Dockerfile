@@ -26,10 +26,43 @@ RUN apt update &&\
 
 FROM juliano777/postgres AS final
 
+ARG PG_HOME='/usr/local/pgsql'
+ARG PG_BIN="${PG_HOME}/bin"
+ARG PG_LIB="${PG_HOME}/lib"
+ARG PG_MAN="${PG_HOME}/man"
+ARG PGUSERHOME='/var/local/pgsql'
+ARG PGDATA="${PGUSERHOME}/data"
+ARG PGPORT='5432'
+ARG PGUSER='postgres'
+ARG PGDATABASE='postgres'
+ARG PGPYTHONPATH="${PGUSERHOME}/python"
+
+ARG PKG='libgeos-c1v5 libproj13 libjson-c3 libprotobuf-c1 libgdal20 rdfind'
+
+ENV \
+    PGDATA="${PGDATA}" \
+    PGPORT="${PGPORT}" \
+    PGUSER="${PGUSER}" \
+    PGDATABASE="${PGDATABASE}" \
+    LD_LIBRARY_PATH="${PG_LIB}:${LD_LIBRARY_PATH}" \
+    MANPATH="${PG_MAN}:${MANPATH}" \
+    PATH="${PG_BIN}:${PATH}" \
+    PYTHONPATH="${PYTHONPATH}:${PGPYTHONPATH}"
+
+USER root    
+
 COPY --from=builder /tmp/pg.tar /tmp
 
-RUN tar xvf --overwrite /tmp/pg.tar -C /
-
+RUN \
+    apt update &&\
+    apt install -y ${PKG} &&\
+    apt clean &&\
+    tar xvf /tmp/pg.tar --overwrite -C / &&\
+    rm -rvf \
+        /tmp/* \
+        /var/lib/apt/lists/* &&\
+    rdfind -makesymlinks true -outputname /dev/null /usr/local
+    
 USER "${PGUSER}"
 WORKDIR "${PGUSERHOME}"
 EXPOSE "${PGPORT}"
