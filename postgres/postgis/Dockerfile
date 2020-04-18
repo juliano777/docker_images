@@ -9,15 +9,18 @@ ARG PKG="\
     wget build-essential pkg-config file libxml2-dev libgeos-dev libproj-dev \
     libprotobuf-c-dev libgdal-dev xsltproc imagemagick protobuf-c-compiler"
 
-RUN apt update
-RUN apt install -y ${PKG}
-RUN cd /tmp
-RUN wget ${POSTGIS_URL}
-RUN cd postgis-${POSTGIS_VERSION}
-RUN ./configure
-RUN make
-RUN make install
-RUN tar cvf /tmp/pg.tar /usr/local/pgsql
+USER root
+
+RUN apt update &&\
+    apt install -y ${PKG} &&\
+    cd /tmp &&\
+    wget ${POSTGIS_URL} &&\
+    tar xf postgis-${POSTGIS_VERSION}.tar.gz &&\
+    cd postgis-${POSTGIS_VERSION} &&\
+    ./configure &&\
+    make &&\
+    make install &&\
+    tar cvf /tmp/pg.tar /usr/local/pgsql
 
 # ============================================================================
 
