@@ -152,8 +152,8 @@ RUN apt update &&\
 		/var/backups \
 		/var/opt \		
 		/opt \
-        /srv &&\
-    apt remove rdfind
+        /srv \
+		/tmp/*
 
 COPY --from=builder /usr/local /usr/local
 

@@ -61,8 +61,7 @@ RUN \
     rm -rvf \
         /tmp/* \
         /var/lib/apt/lists/* &&\
-    rdfind -makesymlinks true -outputname /dev/null /usr/local &&\
-    apt remove rdfind
+    rdfind -makesymlinks true -outputname /dev/null /usr/local
     
 USER "${PGUSER}"
 WORKDIR "${PGUSERHOME}"

@@ -203,8 +203,7 @@ RUN apt update &&\
     rdfind -makesymlinks true -outputname /dev/null /usr/local &&\
     rm -rvf \
         /tmp/* \
-        /var/lib/apt/lists/* &&\
-    apt remove rdfind
+        /var/lib/apt/lists/*
 
 USER "${PGUSER}"
 WORKDIR "${PGUSERHOME}"
