@@ -1,2 +1,3 @@
 *
 !docker-entrypoint.sh
+pg_hba.conf
