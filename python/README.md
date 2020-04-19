@@ -1,7 +1,7 @@
 # Python
 
-Imagem Python otimizada.<br />
-Inclui os seguintes itens:
+Optimized Python Image.<br />
 
+- Python 3.8.2
 - Ipython
 - Bpython
