@@ -169,6 +169,7 @@ if [ "$1" = 'postgres' ]; then
 fi
 
 function runscripts (){
+    PSQL="/usr/local/pgsql/bin/psql -U ${PGUSER} -p ${PGPORT}"
 
     while :
     do
@@ -194,7 +195,7 @@ function runscripts (){
 
             *.sql)
                 echo "$0: running $f";
-                psql -f "$f";
+                ${PSQL} -f "$f";
                 echo ;;
 
             *.sql.bz2)
@@ -221,6 +222,7 @@ done
 
 if [ ${1} == 'runscripts' ]; then
     runscripts
+    shift 1
 fi
 
 exec "$@"
