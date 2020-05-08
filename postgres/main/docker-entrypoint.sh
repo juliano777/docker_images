@@ -219,7 +219,7 @@ function runscripts (){
 done
 }
 
-if [ ${1} == 'runscripts']; then
+if [ ${1} == 'runscripts' ]; then
     runscripts
 fi
 
