@@ -140,8 +140,6 @@ if [ "$1" = 'postgres' ]; then
 		for f in /var/local/pgsql/docker-entrypoint-initdb.d/*; do
 			case "$f" in
 				*.sh)
-					# https://github.com/docker-library/postgres/issues/450#issuecomment-393167936
-					# https://github.com/docker-library/postgres/pull/452
 					if [ -x "$f" ]; then
 						echo "$0: running $f"
 						"$f"
@@ -151,8 +149,8 @@ if [ "$1" = 'postgres' ]; then
 					fi
 					;;
 				*.sql)    echo "$0: running $f"; "${psql[@]}" -f "$f"; echo ;;
+				*.sql.bz2) echo "$0: running $f"; bzip2 -dc "$f" | "${psql[@]}"; echo ;;
 				*.sql.gz) echo "$0: running $f"; gzip -dc "$f" | "${psql[@]}"; echo ;;
-				*.sql.bz2) echo "$0: running $f";  bzip2 -dc "$f" | "${psql[@]}"; echo ;;
 				*.sql.xz) echo "$0: running $f"; xz -dc "$f" | "${psql[@]}"; echo ;;
 				*)        echo "$0: ignoring $f" ;;
 			esac
@@ -168,6 +166,61 @@ if [ "$1" = 'postgres' ]; then
 		echo 'PostgreSQL init process complete; ready for start up.'
 		echo
 	fi
+fi
+
+function runscripts (){
+
+    while :
+    do
+        if [ ${?} == 0 ]; then
+            echo 'PostgreSQL is ready!'
+            break
+        fi    
+
+        sleep 3 
+    done
+
+    for f in /var/local/pgsql/docker-entrypoint-initdb.d/*; do
+
+        case "$f" in
+            *.sh)
+                if [ -x "$f" ]; then
+                    echo "$0: running $f"
+                    "$f"
+                else
+                    echo "$0: sourcing $f"
+                    . "$f"
+                fi;;
+
+            *.sql)
+                echo "$0: running $f";
+                psql -f "$f";
+                echo ;;
+
+            *.sql.bz2)
+                echo "$0: running $f";
+                bzip2 -dc "$f" | "${psql[@]}";
+                echo ;;
+
+            *.sql.gz)
+                echo "$0: running $f";
+                gzip -dc "$f" | "${psql[@]}";
+                echo ;;
+
+            *.sql.xz)
+                echo "$0: running $f";
+                xz -dc "$f" | "${psql[@]}";
+                echo ;;
+
+            *)
+                echo "$0: ignoring $f" ;;
+        esac
+    echo
+done
+}
+
+if [ ${1} == 'runscripts']; then
+    runscripts
 fi
 
 exec "$@"
