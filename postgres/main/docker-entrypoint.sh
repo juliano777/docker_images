@@ -168,6 +168,8 @@ if [ "$1" = 'postgres' ]; then
 	fi
 fi
 
+set +e
+
 function runscripts (){
     PSQL="/usr/local/pgsql/bin/psql -U ${PGUSER} -p ${PGPORT} ${PGDATABASE}" 
 
