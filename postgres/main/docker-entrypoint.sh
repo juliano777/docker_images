@@ -137,7 +137,7 @@ if [ "$1" = 'postgres' ]; then
 		psql+=( --dbname "$POSTGRES_DB" )
 
 		echo
-		for f in /docker-entrypoint-initdb.d/*; do
+		for f in /var/local/pgsql/docker-entrypoint-initdb.d/*; do
 			case "$f" in
 				*.sh)
 					# https://github.com/docker-library/postgres/issues/450#issuecomment-393167936
@@ -151,7 +151,9 @@ if [ "$1" = 'postgres' ]; then
 					fi
 					;;
 				*.sql)    echo "$0: running $f"; "${psql[@]}" -f "$f"; echo ;;
-				*.sql.gz) echo "$0: running $f"; gunzip -c "$f" | "${psql[@]}"; echo ;;
+				*.sql.gz) echo "$0: running $f"; gzip -dc "$f" | "${psql[@]}"; echo ;;
+				*.sql.bz2) echo "$0: running $f";  bzip2 -dc "$f" | "${psql[@]}"; echo ;;
+				*.sql.xz) echo "$0: running $f"; xz -dc "$f" | "${psql[@]}"; echo ;;
 				*)        echo "$0: ignoring $f" ;;
 			esac
 			echo

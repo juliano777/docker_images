@@ -21,6 +21,7 @@ ARG PG_STATS_TEMP="${PGUSERHOME}/pg_stat_tmp"
 ARG PG_WAL="${PGUSERHOME}/wal"
 ARG PG_LOG="${PGUSERHOME}/log"
 ARG PGPYTHONPATH="${PGUSERHOME}/python"
+ARG PGENTRYPOINTDIR="${PGUSERHOME}/docker-entrypoint-initdb.d"
 ARG PGPORT='5432'
 ARG PGUSER='postgres'
 ARG PGDATABASE='postgres'
@@ -102,7 +103,8 @@ RUN \
         ${PG_WAL} \
         ${PGDATA}\
         ${PG_LOG}\
-        ${PGPYTHONPATH} &&\
+        ${PGPYTHONPATH} \
+        ${PGENTRYPOINTDIR} &&\
     chown -R ${PGUSER}:${PGGROUP} ${PGUSERHOME} &&\
     cd /tmp/${PG_SRC} &&\
     PYTHON='/usr/local/bin/python' ./configure ${CONFIGURE_OPTS} &&\
@@ -174,7 +176,7 @@ ARG PGPYTHONPATH="${PGUSERHOME}/python"
 
 ARG LOCALE='pt_BR.UTF-8'
 
-ARG PKG='libldap-2.4-2 libxml2 locales rdfind'
+ARG PKG='bzip2 libldap-2.4-2 libxml2 locales rdfind xz-utils'
 
 # Environment Variables
 
