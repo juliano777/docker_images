@@ -169,10 +169,11 @@ if [ "$1" = 'postgres' ]; then
 fi
 
 function runscripts (){
-    PSQL="/usr/local/pgsql/bin/psql -U ${PGUSER} -p ${PGPORT}"
+    PSQL="/usr/local/pgsql/bin/psql -U ${PGUSER} -p ${PGPORT} ${PGDATABASE}" 
 
     while :
     do
+	${PSQL} -l &> /dev/null
         if [ ${?} == 0 ]; then
             echo 'PostgreSQL is ready!'
             break
