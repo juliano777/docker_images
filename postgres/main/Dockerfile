@@ -5,6 +5,7 @@ ARG PYTHON_VERSION='3.8'
 FROM juliano777/python:${PYTHON_VERSION} AS builder
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY runscripts.sh /usr/local/bin/runscripts.sh
 
 # PostgreSQL variables
 ARG PG_VERSION='12.2'
@@ -21,7 +22,7 @@ ARG PG_STATS_TEMP="${PGUSERHOME}/pg_stat_tmp"
 ARG PG_WAL="${PGUSERHOME}/wal"
 ARG PG_LOG="${PGUSERHOME}/log"
 ARG PGPYTHONPATH="${PGUSERHOME}/python"
-ARG PGENTRYPOINTDIR="${PGUSERHOME}/docker-entrypoint-initdb.d"
+ARG PGENTRYPOINTDIR="${PGUSERHOME}/scripts"
 ARG PGPORT='5432'
 ARG PGUSER='postgres'
 ARG PGDATABASE='postgres'
