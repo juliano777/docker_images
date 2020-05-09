@@ -2,8 +2,8 @@
 
 
 function runscripts (){
-    PSQL="/usr/local/pgsql/bin/psql -U ${PGUSER} -p ${PGPORT} ${PGDATABASE}" 
-
+    PSQL="/usr/local/pgsql/bin/psql -U ${PGUSER} -p ${PGPORT} ${PGDATABASE}"
+    
     while :
     do
 	${PSQL} -l &> /dev/null
@@ -51,8 +51,7 @@ function runscripts (){
                 echo "$0: ignoring $f" ;;
         esac
     echo
-
-}
+    
 
 pg_ctl start
 
