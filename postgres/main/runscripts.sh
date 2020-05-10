@@ -1,9 +1,7 @@
 #!/bin/bash
 
-${1}=\
-"${PSQL:-/usr/local/pgsql/bin/psql -U ${PGUSER} -p ${PGPORT} ${PGDATABASE}}"
-
-export PSQL="${1}"
+export PSQL=\
+"${1:-/usr/local/pgsql/bin/psql -U $PGUSER -p $PGPORT $PGDATABASE}"
 
 export SCRIPT_DIR='/var/local/pgsql/scripts'
 
@@ -42,4 +40,4 @@ for f in ${SCRIPT_DIR}/*; do
         *)
             echo "$0: ignoring ${f}" ;;
     esac
-echo
+done    
