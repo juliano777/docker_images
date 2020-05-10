@@ -24,17 +24,17 @@ for f in ${SCRIPT_DIR}/*; do
 
         *.sql.bz2)
             echo "$0: running ${f}";
-            bzip2 -dc "${f}" | "${PSQL[@]}";
+            bzip2 -dc "${f}" | eval "${PSQL[@]}";
             echo ;;
 
         *.sql.gz)
             echo "$0: running ${f}";
-            gzip -dc "${f}" | "${PSQL[@]}";
+            gzip -dc "${f}" | eval "${PSQL[@]}";
             echo ;;
 
         *.sql.xz)
             echo "$0: running ${f}";
-            xz -dc "${f}" | "${PSQL[@]}";
+            xz -dc "${f}" | eval "${PSQL[@]}";
             echo ;;
 
         *)
