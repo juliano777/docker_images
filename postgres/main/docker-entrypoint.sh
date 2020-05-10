@@ -126,7 +126,7 @@ if [ "$1" = 'postgres' ]; then
 		file_env 'POSTGRES_DB' "$POSTGRES_USER"
 
 		export PGPASSWORD="${PGPASSWORD:-$POSTGRES_PASSWORD}"
-		psql=( psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --no-password )
+		PSQL=( psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --no-password )
 
 		if [ "$POSTGRES_DB" != 'postgres' ]; then
 			"${psql[@]}" --dbname postgres --set db="$POSTGRES_DB" <<-'EOSQL'
@@ -134,31 +134,15 @@ if [ "$1" = 'postgres' ]; then
 			EOSQL
 			echo
 		fi
-		psql+=( --dbname "$POSTGRES_DB" )
+
+		PSQL+=( --dbname "$POSTGRES_DB" )
 
 		echo
-		for f in /var/local/pgsql/scripts/*; do
-			case "$f" in
-				*.sh)
-					if [ -x "$f" ]; then
-						echo "$0: running $f"
-						"$f"
-					else
-						echo "$0: sourcing $f"
-						. "$f"
-					fi
-					;;
-				*.sql)    echo "$0: running $f"; "${psql[@]}" -f "$f"; echo ;;
-				*.sql.bz2) echo "$0: running $f"; bzip2 -dc "$f" | "${psql[@]}"; echo ;;
-				*.sql.gz) echo "$0: running $f"; gzip -dc "$f" | "${psql[@]}"; echo ;;
-				*.sql.xz) echo "$0: running $f"; xz -dc "$f" | "${psql[@]}"; echo ;;
-				*)        echo "$0: ignoring $f" ;;
-			esac
-			echo
-		done
+
+		runscripts.sh ${PSQL[@]}
 
 		PGUSER="${PGUSER:-$POSTGRES_USER}" \
-		pg_ctl -D "$PGDATA" -m fast -w stop
+		pg_ctl -D "${PGDATA}" -m fast -w stop
 
 		unset PGPASSWORD
 
@@ -168,5 +152,4 @@ if [ "$1" = 'postgres' ]; then
 	fi
 fi
 
-
-exec "$@"
+exec "${@}"
