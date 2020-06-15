@@ -141,7 +141,7 @@ RUN apt update &&\
 	apt clean &&\
 	rdfind -makesymlinks true -outputname /dev/null /usr/local &&\
 	ln -s /usr/lib/x86_64-linux-gnu/libffi.so.7.1.0 \
-	    /usr/lib/x86_64-linux-gnu/libffi.so.6  &&\  # Work around :(
+	    /usr/lib/x86_64-linux-gnu/libffi.so.6  &&\
 	apt purge -y ${NO_APT} &&\
 	rm -fr \
 		/var/lib/apt/lists/* \
