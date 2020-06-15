@@ -37,7 +37,7 @@ ARG PGUSER='postgres'
 ARG PGDATABASE='postgres'
 ARG PGPYTHONPATH="${PGUSERHOME}/python"
 
-ARG PKG='libgeos-c1v5 libproj13 libjson-c3 libprotobuf-c1 libgdal20 rdfind'
+ARG PKG='libgeos-c1v5 libproj13 libjson-c3 libprotobuf-c1 libgdal26 rdfind'
 
 ENV \
     PGDATA="${PGDATA}" \
