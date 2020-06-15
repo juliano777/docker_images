@@ -1,4 +1,4 @@
-FROM buildpack-deps:buster AS builder
+FROM buildpack-deps:latest AS builder
 
 ARG PKG='libbluetooth-dev tk-dev uuid-dev libssl-dev'
 
@@ -7,7 +7,7 @@ ARG PKG='libbluetooth-dev tk-dev uuid-dev libssl-dev'
 RUN apt update &&\
 	apt install -y --no-install-recommends ${PKG}
 
-ARG PYTHON_VERSION='3.8.2'
+ARG PYTHON_VERSION='3.8.3'
 
 ARG PYTHON_URL="https://www.python.org/ftp/python/\
 ${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz"
@@ -110,11 +110,11 @@ RUN find /usr/local -depth \
 
 
 # ============================================================================
-FROM debian:buster-slim AS final
+FROM debian:bullseye-slim AS final
 
 ARG PYTHONHOME='/usr/local/python'
 ARG PYTHON_VERSION='3.8'
-ARG APT_PKG='sqlite3 libexpat1 libssl1.1 rdfind'
+ARG APT_PKG='sqlite3 libexpat1 libssl1.1 rdfind libncursesw6'
 ARG NO_APT='rdfind'
 
 # http://bugs.python.org/issue19846

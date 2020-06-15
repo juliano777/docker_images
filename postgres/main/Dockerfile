@@ -8,7 +8,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY runscripts.sh /usr/local/bin/runscripts.sh
 
 # PostgreSQL variables
-ARG PG_VERSION='12.2'
+ARG PG_VERSION='12.3'
 ARG PG_SRC="postgresql-${PG_VERSION}"
 ARG PG_SRC_F="${PG_SRC}.tar.bz2"
 ARG PG_URL="https://ftp.postgresql.org/pub/source/v${PG_VERSION}/${PG_SRC_F}"

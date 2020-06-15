@@ -24,7 +24,7 @@ RUN apt update &&\
 
 # ============================================================================
 
-FROM juliano777/postgres AS final
+FROM juliano777/postgres:latest AS final
 
 ARG PG_HOME='/usr/local/pgsql'
 ARG PG_BIN="${PG_HOME}/bin"
