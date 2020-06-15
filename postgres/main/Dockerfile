@@ -146,7 +146,7 @@ RUN \
 COPY ./pg_hba.conf ${PGDATA}/pg_hba.conf
 
 # Python packages
-RUN pip install --upgrade pip psycopg2 pgcli
+RUN pip install --upgrade pip psycopg2-binary pgcli
 
 # tar package
 RUN tar cvzf /tmp/pg.tar.gz \
