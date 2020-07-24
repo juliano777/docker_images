@@ -1,7 +1,7 @@
 # Optimized PostgreSQL
 
-- PostgreSQL 12.2
-- Python 3.8.2
+- PostgreSQL 12.3
+- Python 3.8.5
     - psycopg2
     - pgcli
     - ipython
