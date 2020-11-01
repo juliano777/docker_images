@@ -1,8 +1,8 @@
 # Optimized PostgreSQL with PostGIS
 
-- PostgreSQL 12.2
-- PostGIS 3.0.1
-- Python 3.8.2
+- PostgreSQL 13.0
+- PostGIS 3.0.2
+- Python 3.9.0
 - PL/Python 3
 - XML
 - UUID
