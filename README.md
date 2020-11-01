@@ -2,6 +2,6 @@
 
 Docker Hub links:
 
-- [Python 3.8.5](https://hub.docker.com/repository/docker/juliano777/python)
-- [PostgreSQL 12.3](https://hub.docker.com/repository/docker/juliano777/postgres)
-- [PostGIS 3.0.1](https://hub.docker.com/repository/docker/juliano777/postgis)
+- [Python 3.9.0](https://hub.docker.com/repository/docker/juliano777/python)
+- [PostgreSQL 13.0](https://hub.docker.com/repository/docker/juliano777/postgres)
+- [PostGIS 3.0.2](https://hub.docker.com/repository/docker/juliano777/postgis)
