@@ -1,6 +1,6 @@
 FROM juliano777/postgres AS builder
 
-ARG POSTGIS_VERSION='3.0.1'
+ARG POSTGIS_VERSION='3.0.2'
 
 ARG POSTGIS_URL="https://download.osgeo.org/postgis/source/postgis-\
 ${POSTGIS_VERSION}.tar.gz"

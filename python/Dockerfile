@@ -7,7 +7,7 @@ ARG PKG='libbluetooth-dev tk-dev uuid-dev libssl-dev'
 RUN apt update &&\
 	apt install -y --no-install-recommends ${PKG}
 
-ARG PYTHON_VERSION='3.8.5'
+ARG PYTHON_VERSION='3.9.0'
 
 ARG PYTHON_URL="https://www.python.org/ftp/python/\
 ${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz"
