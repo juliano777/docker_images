@@ -12,7 +12,8 @@ file_env() {
 	local fileVar="${var}_FILE"
 	local def="${2:-}"
 	if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
-		echo >&2 "error: both $var and $fileVar are set (but are exclusive)"
+		msg="error: both ${var} and ${fileVar} are set (but are exclusive)"
+		echo >&2 "${msg}"
 		exit 1
 	fi
 	local val="${def}"
@@ -35,10 +36,10 @@ _is_sourced() {
 
 # used to create initial postgres directories and if run as root, ensure ownership to the "postgres" user
 docker_create_db_directories() {
-	local user; user="$(id -u)"
+	local user; user="`id -u`"
 
-	mkdir -p "$PGDATA"
-	chmod 700 "$PGDATA"
+	mkdir -p "${PGDATA}"
+	chmod 700 "${PGDATA}"
 
 	# ignore failure since it will be fine when using the image provided directory; see also https://github.com/docker-library/postgres/pull/289
 	mkdir -p /var/run/postgresql || :
