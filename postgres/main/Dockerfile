@@ -5,7 +5,6 @@ ARG PYTHON_VERSION='3.9'
 FROM juliano777/python:${PYTHON_VERSION} AS builder
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-COPY runscripts.sh /usr/local/bin/runscripts.sh
 
 # PostgreSQL variables
 ARG PG_VERSION='13.0'
