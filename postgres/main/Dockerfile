@@ -123,27 +123,11 @@ RUN localedef -i `echo ${LOCALE} | cut -f1 -d.` -c -f UTF-8 \
 # initdb
 RUN su - postgres -c "${PG_BIN}/initdb ${INITDB_OPTS}"
 
-# Changes to postgresql.conf
-RUN \
-    sed "s:\(^#listen_addresses.*\):\1\nlisten_addresses = '*':g" \
-        -i ${PGDATA}/postgresql.conf &&\
-    sed "s:\(^#log_destination.*\):\1\nlog_destination = 'stderr':g" \
-        -i ${PGDATA}/postgresql.conf &&\
-    sed "s:\(^#logging_collector.*\):\1\nlogging_collector = on:g" \
-        -i ${PGDATA}/postgresql.conf &&\
-    sed "s:\(^#\)\(log_filename.*\):\1\2\n\2:g" \
-        -i ${PGDATA}/postgresql.conf &&\
-    sed "s:\(^#log_directory.*\):\1\nlog_directory = '${PG_LOG}':g" \
-    -i ${PGDATA}/postgresql.conf &&\
-    sed \
-"s:\(^#stats_temp_directory.*\):\1\nstats_temp_directory =\
- '${PG_STATS_TEMP}':g" -i ${PGDATA}/postgresql.conf &&\
-    sed \
-"s:\(^#password_encryption.*\):\1\npassword_encryption = scram-sha-256:g" \
-    -i ${PGDATA}/postgresql.conf
-
 # Overwrite pg_hba.conf
 COPY ./pg_hba.conf ${PGDATA}/pg_hba.conf
+
+# Overwrite postgresql.conf
+COPY ./postgresql.conf ${PGDATA}/postgresql.conf
 
 # Python packages
 RUN pip install --upgrade pip psycopg2 pgcli
@@ -174,6 +158,7 @@ ARG PGPORT='5432'
 ARG PGUSER='postgres'
 ARG PGDATABASE='postgres'
 ARG PGPYTHONPATH="${PGUSERHOME}/python"
+ARG PGENTRYPOINTDIR="${PGUSERHOME}/scripts"
 
 ARG LOCALE='pt_BR.UTF-8'
 
@@ -189,7 +174,8 @@ ENV \
     LD_LIBRARY_PATH="${PG_LIB}:${LD_LIBRARY_PATH}" \
     MANPATH="${PG_MAN}:${MANPATH}" \
     PATH="${PG_BIN}:${PATH}" \
-    PYTHONPATH="${PYTHONPATH}:${PGPYTHONPATH}"
+    PYTHONPATH="${PYTHONPATH}:${PGPYTHONPATH}" \
+    PGENTRYPOINTDIR="${PGENTRYPOINTDIR}"
 
 COPY --from=builder /tmp/pg.tar.gz /tmp/
 

@@ -2,3 +2,4 @@
 !docker-entrypoint.sh
 !runscripts.sh
 !pg_hba.conf
+!postgresql.conf
