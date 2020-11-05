@@ -125,23 +125,23 @@ docker_process_init_files() {
 	echo
 	local f
 	for f; do
-		case "$f" in
+		case "${f}" in
 			*.sh)
 				# https://github.com/docker-library/postgres/issues/450#issuecomment-393167936
 				# https://github.com/docker-library/postgres/pull/452
-				if [ -x "$f" ]; then
-					echo "$0: running $f"
-					"$f"
+				if [ -x "${f}" ]; then
+					echo "$0: running ${f}"
+					"${f}"
 				else
-					echo "$0: sourcing $f"
-					. "$f"
+					echo "${0}: sourcing ${f}"
+					. "${f}"
 				fi
 				;;
-			*.sql)     echo "$0: running $f"; docker_process_sql -f "$f"; echo ;;
-			*.sql.bz2) echo "$0: running $f"; bunzip2 -c "$f" | docker_process_sql; echo ;;
-			*.sql.gz)  echo "$0: running $f"; gunzip -c "$f" | docker_process_sql; echo ;;
-			*.sql.xz)  echo "$0: running $f"; xzcat "$f" | docker_process_sql; echo ;;
-			*)         echo "$0: ignoring $f" ;;
+			*.sql)     echo "${0}: running ${f}"; docker_process_sql -f "${f}"; echo ;;
+			*.sql.bz2) echo "${0}: running ${f}"; bunzip2 -c "${f}" | docker_process_sql; echo ;;
+			*.sql.gz)  echo "${0}: running ${f}"; gunzip -c "${f}" | docker_process_sql; echo ;;
+			*.sql.xz)  echo "${0}: running ${f}"; xzcat "${f}" | docker_process_sql; echo ;;
+			*)         echo "${0}: ignoring ${f}" ;;
 		esac
 		echo
 	done
@@ -252,13 +252,13 @@ _main() {
 		docker_setup_env
 		# setup data directories and permissions (when run as root)
 		docker_create_db_directories
-		if [ "$(id -u)" = '0' ]; then
+		if [ "`id -u`" = '0' ]; then
 			# then restart script as postgres user
-			exec gosu postgres "$BASH_SOURCE" "${@}"
+			exec gosu postgres "${BASH_SOURCE}" "${@}"
 		fi
 
 		# only run initialization on an empty data directory
-		if [ -z "$DATABASE_ALREADY_EXISTS" ]; then
+		if [ -z "${DATABASE_ALREADY_EXISTS}" ]; then
 			docker_verify_minimum_env
 
 			# check dir permissions to reduce likelihood of half-initialized database
@@ -288,9 +288,9 @@ _main() {
 		fi
 	fi
 
-	exec "$@"
+	exec "${@}"
 }
 
 if ! _is_sourced; then
-	_main "$@"
+	_main "${@}"
 fi
