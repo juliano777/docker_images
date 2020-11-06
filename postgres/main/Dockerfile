@@ -128,6 +128,9 @@ COPY ./pg_hba.conf ${PGDATA}/pg_hba.conf
 # Overwrite postgresql.conf
 COPY ./postgresql.conf ${PGDATA}/postgresql.conf
 
+# Change owner to postgres user
+chown -R ${PGUSER} ${PGDATA}
+
 # Python packages
 RUN pip install --upgrade pip psycopg2 pgcli
 
