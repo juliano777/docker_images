@@ -7,7 +7,7 @@ FROM juliano777/python:${PYTHON_VERSION} AS builder
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 # PostgreSQL variables
-ARG PG_VERSION='13.0'
+ARG PG_VERSION='13.2'
 ARG PG_SRC="postgresql-${PG_VERSION}"
 ARG PG_SRC_F="${PG_SRC}.tar.bz2"
 ARG PG_URL="https://ftp.postgresql.org/pub/source/v${PG_VERSION}/${PG_SRC_F}"
