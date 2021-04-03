@@ -164,7 +164,7 @@ ARG PGENTRYPOINTDIR="${PGUSERHOME}/scripts"
 
 ARG LOCALE='pt_BR.UTF-8'
 
-ARG PKG='bzip2 libldap-2.4-2 libxml2 locales rdfind xz-utils'
+ARG PKG='bzip2 libldap-2.4-2 libnss-wrapper libxml2 locales rdfind xz-utils'
 
 # Environment Variables
 
@@ -191,6 +191,7 @@ RUN apt update &&\
         en_US.UTF-8 &&\
     localedef -i en_DK -c -f UTF-8 -A /usr/share/locale/locale.alias \
         en_DK.UTF-8 &&\
+    mkdir /tmp/db-scripts &&\
     rdfind -makesymlinks true -outputname /dev/null /usr/local &&\
     rm -rvf \
         /tmp/* \
