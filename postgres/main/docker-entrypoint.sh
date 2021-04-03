@@ -346,6 +346,8 @@ _main() {
 
 			docker_setup_db
 			docker_process_init_files ${INITDB_DIR}/*
+            rm ${INITDB_DIR}
+            unset INITDB_DIR
 
 			docker_temp_server_stop
 			unset PGPASSWORD
