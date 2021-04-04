@@ -4,10 +4,19 @@ ARG PYTHON_VERSION='3.9'
 
 FROM juliano777/python:${PYTHON_VERSION} AS builder
 
+ARG PG_VERSION='13.2'
+
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
+COPY doker-scripts/pg_install /usr/local/bin
+
+RUN /usr/local/bin --version ${PG_VERSION}
+
+
+
+
+
 # PostgreSQL variables
-ARG PG_VERSION='13.2'
 ARG PGDATA="${PGUSERHOME}/data"
 ARG PG_STATS_TEMP="${PGUSERHOME}/pg_stat_tmp"
 ARG PG_WAL="${PGUSERHOME}/wal"
