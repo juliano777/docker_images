@@ -44,10 +44,10 @@ PGPYTHONPATH="${PGUSERHOME}/python"
 PGUSER='postgres'
 PGGROUP='postgres'
 PGPYTHONPATH="${PGUSERHOME}/python"
-ARG PG_LOG="${PGUSERHOME}/log"
+PG_LOG="${PGUSERHOME}/log"
 
 # Configure options to make
-ARG CONFIGURE_OPTS="\
+CONFIGURE_OPTS="\
     --prefix ${PG_HOME} \
     --bindir ${PG_BIN} \
     --with-python \
@@ -60,20 +60,20 @@ ARG CONFIGURE_OPTS="\
     --docdir=${PG_DOC}"
 
 # Number of jobs according to the number of processor cores +1
-ARG NJOBS="`expr \`cat /proc/cpuinfo | egrep ^processor | wc -l\` + 1`"
+NJOBS="`expr \`cat /proc/cpuinfo | egrep ^processor | wc -l\` + 1`"
 
 # Make options
-ENV MAKEOPTS="-j${NJOBS}"
+MAKEOPTS="-j${NJOBS}"
 
 # 64 bits
-ENV CHOST='x86_64-unknown-linux-gnu'
+CHOST='x86_64-unknown-linux-gnu'
 
 # Optimization flags to make
-ENV CFLAGS='-O2 -pipe'
-ENV CXXFLAGS="${CFLAGS}"
+CFLAGS='-O2 -pipe'
+CXXFLAGS="${CFLAGS}"
 
 # PATH environment variable
-ENV PATH="${PG_BIN}:${PATH}"
+PATH="${PG_BIN}:${PATH}"
 
 # ============================================================================
 
@@ -115,5 +115,5 @@ useradd -m -r \
     PYTHON='/usr/local/bin/python' ./configure ${CONFIGURE_OPTS}
 
     make world
-    
+
     make install-world
