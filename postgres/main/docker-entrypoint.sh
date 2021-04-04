@@ -38,26 +38,21 @@ _is_sourced() {
 docker_create_db_directories() {
 	local user; user="`id -u`"
 
-	mkdir -p "${PGDATA}"
-	# ignore failure since there are cases where we can't chmod (and
-    # PostgreSQL might fail later anyhow - it's picky about permissions of
-    # this directory)
-	chmod 700 "${PGDATA}" || :
+	mkdir -pm 700 "${PGDATA}"
+	
 
 	# ignore failure since it will be fine when using the image provided
     # directory; see also https://github.com/docker-library/postgres/pull/289
-	mkdir -p /var/run/pgsql || :
-	chmod 775 /var/run/pgsql || :
+	mkdir -pm 775 /var/run/pgsql || :
 
 	# Create the transaction log directory before initdb is run so the
     # directory is owned by the correct user
 	if [ -n "${POSTGRES_INITDB_WALDIR}" ]; then
-		mkdir -p "${POSTGRES_INITDB_WALDIR}"
+		mkdir -pm 700 "${POSTGRES_INITDB_WALDIR}"
 		if [ "${user}" = '0' ]; then
 			find "${POSTGRES_INITDB_WALDIR}" \! -user postgres -exec chown \
                 postgres '{}' +
 		fi
-		chmod 700 "${POSTGRES_INITDB_WALDIR}"
 	fi
 
 	# allow the container to be started with `--user`
@@ -245,8 +240,8 @@ docker_setup_env() {
 	file_env 'POSTGRES_USER' 'postgres'
 	file_env 'POSTGRES_DB' "${POSTGRES_USER}"
 	file_env 'POSTGRES_INITDB_ARGS'
-	# default authentication method is md5
-	: "${POSTGRES_HOST_AUTH_METHOD:=md5}"
+	# default authentication method is scram-sha-256
+	: "${POSTGRES_HOST_AUTH_METHOD:=scram-sha-256}"
 
 	declare -g DATABASE_ALREADY_EXISTS
 	# look specifically for PG_VERSION, as it is expected in the DB dir
@@ -308,8 +303,8 @@ _pg_want_help() {
 }
 
 _main() {
-    # Docker entrypoint initdb scripts
-    INITDB_DIR='/tmp/db-scripts'
+	# Docker entrypoint initdb scripts
+	INITDB_DIR='/tmp/db-scripts'
 
 	# if first arg looks like a flag, assume we want to run postgres server
 	if [ "${1:0:1}" = '-' ]; then
@@ -330,17 +325,17 @@ _main() {
 			docker_verify_minimum_env
 
 			# check dir permissions to reduce likelihood of half-initialized
-            # database
+			# database
 			ls ${INITDB_DIR}/ > /dev/null
 
 			docker_init_database_dir
 			pg_setup_hba_conf
 
 			# PGPASSWORD is required for psql when authentication is required
-            # for 'local' connections via pg_hba.conf and is otherwise
-            # harmless
-			# e.g. when '--auth=md5' or '--auth-local=md5' is used in
-            # POSTGRES_INITDB_ARGS
+			# for 'local' connections via pg_hba.conf and is otherwise
+			# harmless
+			# e.g. when '--auth=scram-sha-256' or '--auth-local=scram-sha-256' is used in
+			# POSTGRES_INITDB_ARGS
 			export PGPASSWORD="${PGPASSWORD:-$POSTGRES_PASSWORD}"
 			docker_temp_server_start "${@}"
 
