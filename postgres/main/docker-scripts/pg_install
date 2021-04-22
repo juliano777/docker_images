@@ -39,12 +39,14 @@ PG_HOME='/usr/local/pgsql'
 PG_BIN="${PG_HOME}/bin"
 PG_DOC="${PG_HOME}/doc"
 PG_MAN="${PG_HOME}/man"
-PGUSERHOME='/var/local/pgsql'
-PGPYTHONPATH="${PGUSERHOME}/python"
-PGUSER='postgres'
-PGGROUP='postgres'
-PGPYTHONPATH="${PGUSERHOME}/python"
-PG_LOG="${PGUSERHOME}/log"
+POSTGRES_USER_HOME='/var/local/pgsql'
+PGPYTHONPATH="${POSTGRES_USER_HOME}/python"
+POSTGRES_USER='postgres'
+POSTGRES_GROUP='postgres'
+PGPYTHONPATH="${POSTGRES_USER_HOME}/python"
+PG_LOG="${POSTGRES_USER_HOME}/log"
+
+
 
 # Configure options to make
 CONFIGURE_OPTS="\
@@ -77,43 +79,55 @@ PATH="${PG_BIN}:${PATH}"
 
 # ============================================================================
 
+# Refresh repositories
 apt update
 
+# Install packages
 apt install -y ${PKG}
 
+# Download bziped source code to /tmp directory
 wget -qO - ${PG_URL} | tar -xjC /tmp/
 
+# Heredoc to create a customized psql file profile
 cat << EOF > /etc/skel/.psqlrc
 \x auto
 \set COMP_KEYWORD_CASE upper
 \set HISTCONTROL ignoreboth
 EOF
 
+# Add system group 
+groupadd -r ${POSTGRES_GROUP}
 
-groupadd ${PGGROUP}
-
+# Add system user
 useradd -m -r \
     --shell /bin/bash\
-    --gid ${PGGROUP}\
-    --home-dir ${PGUSERHOME}\
+    --gid ${POSTGRES_GROUP}\
+    --home-dir ${POSTGRES_USER_HOME}\
     --skel /etc/skel\
     --comment 'PostgreSQL system user'\
-    ${PGUSER}
+    ${POSTGRES_USER}
         
+# Make directories
+mkdir -p \
+    ${PG_STATS_TEMP}\
+    ${PGDATA}\
+    ${PG_LOG}\
+    ${PGPYTHONPATH}
 
-    mkdir -p \
-        ${PG_STATS_TEMP}\
-        ${PGDATA}\
-        ${PG_LOG}\
-        ${PGPYTHONPATH}
-        
-        
-    chown -R ${PGUSER}:${PGGROUP} ${PGUSERHOME}
+# Change ownership
+chown -R ${POSTGRES_USER}:${POSTGRES_GROUP} ${POSTGRES_USER_HOME}
 
-    cd /tmp/${PG_SRC}
+# Go to source directory
+cd /tmp/${PG_SRC}
 
-    PYTHON='/usr/local/bin/python' ./configure ${CONFIGURE_OPTS}
+# Configure process with environment variable for Python binary
+PYTHON='/usr/local/bin/python' ./configure ${CONFIGURE_OPTS}
 
-    make world
+# Make
+make world
 
-    make install-world
+# Make install
+make install-world
+
+# Delete itself
+rm -f ${0}
