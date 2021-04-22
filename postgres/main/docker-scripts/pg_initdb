@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# PostgreSQL database initialization
+
+while [ ${#} -gt 0 ]
+do
+    case ${1} in
+        # PostgreSQL version
+        '-V' | '--version')
+            PG_VERSION=${2};
+            shift;;
+        
+        (--)
+            shift;
+            break;;
+
+        (-*)
+            echo -e "${0} [Error]:\n Unrecognized option ${1}" 1>&2;
+            exit 1;;
+
+        (*)
+            break;;
+    esac
+    shift
+done
+
+# Environment variables ======================================================
+POSTGRES_PASSWORD
+POSTGRES_DB
+POSTGRES_INITDB_ARGS
+POSTGRES_INITDB_WALDIR
+POSTGRES_HOST_AUTH_METHOD
+
+# initdb options
+INITDB_OPTS="\
+    -k \
+    -D ${PGDATA} \
+    -E utf8 \
+    -U ${PGUSER} \
+    --locale=${LOCALE} \
+    --lc-collate=${LC_COLLATE} \
+    --lc-monetary=${LC_MONETARY} \
+    --lc-messages=${LC_MESSAGES} \
+    --auth-local=trust \
+    --auth-host=scram-sha-256 \
+    -T portuguese \
+    -X ${PG_WAL}"
